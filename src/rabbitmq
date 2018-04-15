@@ -29,12 +29,20 @@ function getData() {
         | sedeasy "__PAYLOAD__" "$payload"
 }
 
+function execute() {
+    curl "${HOST}/api/exchanges/%2F/${exchange}/publish" -s \
+        -H "authorization: Basic ${AUTH}" \
+        --data-binary "`getData`" | jq '.routed'
+}
+
 function run () {
     getArg key,payload
 
-    curl "${HOST}/api/exchanges/%2F/${exchange}/publish" \
-        -H "authorization: Basic ${AUTH}" \
-        --data-binary "`getData`"
+    info "Publish to [$exchange/$key]: $payload"
+    result=`execute`
+    if [ "$result" != 'true' ]; then
+        warn "Failed to route"
+    fi
 }
 
 source "__STARTER__@v2"
