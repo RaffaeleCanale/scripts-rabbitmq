@@ -1,0 +1,14 @@
+{
+    "vhost": "/",
+    "name": "__EXCHANGE__",
+    "properties": {
+        "delivery_mode": 2,
+        "headers": {}
+    },
+    "routing_key": "all.__KEY__",
+    "delivery_mode": "2",
+    "payload": "__PAYLOAD__",
+    "headers": {},
+    "props": {},
+    "payload_encoding": "string"
+}

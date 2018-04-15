@@ -1,0 +1,40 @@
+#!/bin/bash
+
+function declareConstants() {
+    $1 HOST "__HOST__"
+    $1 AUTH "__AUTH__"
+}
+
+function printHelp() {
+    cat << EOF
+    Publish an RabbitMQ message to an exchange
+
+    Usage:
+        $PROGNAME `green "<key> <payload>"` `cyan "--exchange <exchange>"`
+
+    Options:
+        `cyan exchange`: Name of the exchange (default: `bold "__DEFAULT_EXCHANGE__"`)
+EOF
+}
+
+function loadOptions() {
+    # unusedBehaviour="IGNORE"
+    getOpt "--exchange" exchange 1 "__DEFAULT_EXCHANGE__"
+}
+
+function getData() {
+    cat "__ROOT__/data.json" \
+        | sedeasy "__EXCHANGE__" "$exchange" \
+        | sedeasy "__KEY__" "$key" \
+        | sedeasy "__PAYLOAD__" "$payload"
+}
+
+function run () {
+    getArg key,payload
+
+    curl "${HOST}/api/exchanges/%2F/${exchange}/publish" \
+        -H "authorization: Basic ${AUTH}" \
+        --data-binary "`getData`"
+}
+
+source "__STARTER__@v2"
